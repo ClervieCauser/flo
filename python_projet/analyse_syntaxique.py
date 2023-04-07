@@ -42,11 +42,11 @@ class FloParser(Parser):
 
 	@_('"(" expr ")"')
 	def facteur(self, p):
-		return p.expr #ou p[1]
+		return p.facteur #ou p[1]
 
 	@_('facteur')
 	def expr(self, p):
-		return p.expr
+		return p.facteur
 		
 	@_('ENTIER')
 	def facteur(self, p):

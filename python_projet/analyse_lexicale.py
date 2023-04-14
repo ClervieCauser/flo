@@ -34,6 +34,10 @@ class FloLexer(Lexer):
 		t.value = int(t.value)
 		return t
 
+	@_(r'[a-zA-Z][a-zA-Z0-9_]*')
+	def LIRE(self, t):
+		t.value = str(t.value)
+		return t
 	@_(r'vrai|faux|1|0')
 	def BOOLEAN(self, t):
 		t.value = bool(t.value)
@@ -49,7 +53,6 @@ class FloLexer(Lexer):
 	IDENTIFIANT['sinon'] = SINON
 	IDENTIFIANT['tant que'] = TANT_QUE
 	IDENTIFIANT['retourner'] = RETOURNER
-	IDENTIFIANT['lire'] = LIRE
 	
 	#Syntaxe des commentaires à ignorer
 	ignore_comment = r'\#.*'

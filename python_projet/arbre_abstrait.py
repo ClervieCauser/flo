@@ -47,7 +47,7 @@ class Entier:
 		afficher("[Entier:"+str(self.valeur)+"]",indent)
 
 class Lire:
-	def __init__(self,valeur):
-		self.valeur = valeur
-	def afficher(self,indent=0):
-		afficher("[Lire:"+str(self.valeur)+"]",indent)
+	def __init__(self):
+		pass
+	def afficher(self, indent=0):
+		afficher("[Lire]", indent)

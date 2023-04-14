@@ -72,9 +72,9 @@ class FloParser(Parser):
 	def facteur(self, p):
 		return arbre_abstrait.Entier(p.ENTIER) #p.ENTIER = p[0]
 
-	@_('lire()')
+	@_('LIRE "(" expr ")" ";"')
 	def facteur(self, p):
-		return arbre_abstrait.Lire(p.LIRE)
+		return arbre_abstrait.Lire(p.expr)
 
 if __name__ == '__main__':
 	lexer = FloLexer()

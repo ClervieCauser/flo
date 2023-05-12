@@ -32,21 +32,49 @@ class FloParser(Parser):
 	def ecrire(self, p):
 		return arbre_abstrait.Ecrire(p.expr) #p.expr = p[2]
 		
-	@_('expr "+" expr')
+	@_('expr "+" produit')
 	def expr(self, p):
 		return arbre_abstrait.Operation('+',p[0],p[2])
 
-	@_('expr "*" expr')
+	@_('expr "-" produit')
 	def expr(self, p):
+		return arbre_abstrait.Operation('-',p[0],p[2])
+
+	@_('produit "*" facteur')
+	def produit(self, p):
 		return arbre_abstrait.Operation('*',p[0],p[2])
 
+	@_('produit "/" facteur')
+	def produit(self, p):
+		return arbre_abstrait.Operation('/',p[0],p[2])
+
+	@_('produit "%" facteur')
+	def produit(self, p):
+		return arbre_abstrait.Operation('%', p[0], p[2])
+
+	@_('produit')
+	def expr(self,p):
+		return p.produit
+
 	@_('"(" expr ")"')
-	def expr(self, p):
-		return p.expr #ou p[1]
+	def facteur(self, p):
+		return p[1]
+
+	@_('"-" facteur')
+	def produit(self, p):
+		return arbre_abstrait.Operation('*',arbre_abstrait.Entier(-1),p[1])
+
+	@_('facteur')
+	def produit(self, p):
+		return p.facteur
 		
 	@_('ENTIER')
-	def expr(self, p):
+	def facteur(self, p):
 		return arbre_abstrait.Entier(p.ENTIER) #p.ENTIER = p[0]
+
+	@_('LIRE "(" expr ")" ";"')
+	def facteur(self, p):
+		return arbre_abstrait.Lire(p.expr)
 
 if __name__ == '__main__':
 	lexer = FloLexer()

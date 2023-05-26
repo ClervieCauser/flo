@@ -6,7 +6,7 @@ import arbre_abstrait
 class FloParser(Parser):
     # On récupère la liste des lexèmes de l'analyse lexicale
     tokens = FloLexer.tokens
-
+    debugfile = "parser.out"
     # Règles gramaticales et actions associées
 
     @_('listeInstructions')
@@ -72,22 +72,18 @@ class FloParser(Parser):
     def facteur(self, p):
         return arbre_abstrait.Entier(p.ENTIER) #p.ENTIER = p[0]
 
-    @_('LIRE "(" expr ")" ";"')
+    @_('LIRE "(" ")"')
     def facteur(self, p):
-        return arbre_abstrait.Lire(p.expr)
+        return arbre_abstrait.Lire()
 
 
     @_('booleen')
     def expr(self, p):
         return p.booleen
 
-    @_('VRAI')
+    @_('BOOLEEN')
     def booleen(self, p):
-        return arbre_abstrait.Bool(True)
-
-    @_('FAUX')
-    def booleen(self, p):
-        return arbre_abstrait.Bool(False)
+        return arbre_abstrait.Bool(p[0])
 
     @_('somme')
     def booleen(self, p):

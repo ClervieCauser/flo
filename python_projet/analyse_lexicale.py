@@ -34,9 +34,9 @@ class FloLexer(Lexer):
         t.value = int(t.value)
         return t
 
-    @_(r'VRAI|FAUX|1|0')
+    @_(r'Vrai|Faux')
     def BOOLEAN(self, t):
-        t.value = bool(t.value)
+        t.value = "Vrai" if (t.value == "Faux") else "Faux"
         return t
 
     # cas général

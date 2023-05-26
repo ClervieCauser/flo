@@ -81,7 +81,7 @@ class FloParser(Parser):
     def expr(self, p):
         return p.booleen
 
-    @_('BOOLEEN')
+    @_('BOOLEAN')
     def booleen(self, p):
         return arbre_abstrait.Bool(p[0])
 

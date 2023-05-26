@@ -106,6 +106,11 @@ def gen_expression(expression):
 		gen_operation(expression) #on calcule et empile la valeur de l'opération
 	elif type(expression) == arbre_abstrait.Entier:
       		nasm_instruction("push", str(expression.valeur), "", "", "") ; #on met sur la pile la valeur entière			
+	elif type (expression) == arbre_abstrait.Bool: 
+		if expression.valeur == "Vrai": 
+			nasm_instruction("push", "1", "", "", "")  # on met sur la pile la valeur 1 pour dire vrai
+		else :
+			nasm_instruction("push", "0", "", "", "")  # on met sur la pile la valeur 0 pour dire faux
 	elif type(expression) == arbre_abstrait.Lire: 
 		gen_lire(expression)
 	else:

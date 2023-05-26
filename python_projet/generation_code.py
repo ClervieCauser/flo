@@ -92,6 +92,12 @@ def gen_ecrire(ecrire):
 	nasm_instruction("pop", "eax", "", "", "") #on dépile la valeur d'expression sur eax
 	nasm_instruction("call", "iprintLF", "", "", "") #on envoie la valeur d'eax sur la sortie standard
 
+def gen_lire(lire): 
+	nasm_instruction("mov", "eax", "sinput", "", "")
+	nasm_instruction("call", "readline", "", "", "")
+	nasm_instruction("call", "atoi", "", "", "")
+	nasm_instruction("push", "eax", "", "", "")
+
 """
 Affiche le code nasm pour calculer et empiler la valeur d'une expression
 """
@@ -100,6 +106,8 @@ def gen_expression(expression):
 		gen_operation(expression) #on calcule et empile la valeur de l'opération
 	elif type(expression) == arbre_abstrait.Entier:
       		nasm_instruction("push", str(expression.valeur), "", "", "") ; #on met sur la pile la valeur entière			
+	elif type(expression) == arbre_abstrait.Lire: 
+		gen_lire(expression)
 	else:
 		print("type d'expression inconnu",type(expression))
 		exit(0)

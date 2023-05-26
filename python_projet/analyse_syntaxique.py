@@ -76,9 +76,19 @@ class FloParser(Parser):
     def facteur(self, p):
         return arbre_abstrait.Lire()
 
-
-    @_('booleen')
+    @_('conjonction')
     def expr(self, p):
+        return p.conjonction
+    
+    @_('disjonction')
+    def conjonction(self, p): 
+        return p.disjonction
+    
+    @_('neg')
+    def disjonction(self, p):
+        return p.neg
+    @_('booleen')
+    def neg(self, p):
         return p.booleen
 
     @_('BOOLEAN')
@@ -97,41 +107,41 @@ class FloParser(Parser):
     def variable(self, p):
         return arbre_abstrait.Variable(p.IDENTIFIANT)
 
-    @_('NON booleen')
-    def booleen(self, p):
-        return arbre_abstrait.Negation(p.booleen)
+    @_('NON neg')
+    def neg(self, p):
+        return arbre_abstrait.Negation(p[1])
 
-    @_('booleen ET booleen')
-    def booleen(self, p):
-        return arbre_abstrait.Conjonction(p.booleen1, p.booleen2)
+    @_('disjonction ET neg')
+    def disjonction(self, p):
+        return arbre_abstrait.Disjonction(p[0], p[2])
 
-    @_('booleen OU booleen')
-    def booleen(self, p):
-        return arbre_abstrait.Disjonction(p.booleen1, p.booleen2)
+    @_('conjonction OU disjonction')
+    def conjonction(self, p):
+        return arbre_abstrait.Conjonction(p[0], p[2])
 
     @_('somme INFERIEUR somme')
     def expr(self, p):
-        return arbre_abstrait.Comparaison('<', p.somme0, p.somme1)
+        return arbre_abstrait.Comparaison('<', p[0], p[2])
 
     @_('somme INFERIEUR_OU_EGAL somme')
     def expr(self, p):
-        return arbre_abstrait.Comparaison('<=', p.somme0, p.somme1)
+        return arbre_abstrait.Comparaison('<=', p[0], p[2])
 
     @_('somme SUPERIEUR somme')
     def expr(self, p):
-        return arbre_abstrait.Comparaison('>', p.somme0, p.somme1)
+        return arbre_abstrait.Comparaison('>', p[0], p[2])
 
     @_('somme SUPERIEUR_OU_EGAL somme')
     def expr(self, p):
-        return arbre_abstrait.Comparaison('>=', p.somme0, p.somme1)
+        return arbre_abstrait.Comparaison('>=', p[0], p[2])
 
     @_('somme EGAL somme')
     def expr(self, p):
-        return arbre_abstrait.Comparaison('==', p.somme0, p.somme1)
+        return arbre_abstrait.Comparaison('==', p[0], p[2])
 
     @_('somme DIFFERENT somme')
     def expr(self, p):
-        return arbre_abstrait.Comparaison('!=', p.somme0, p.somme1)
+        return arbre_abstrait.Comparaison('!=', p[0], p[2])
 
 if __name__ == '__main__':
     lexer = FloLexer()

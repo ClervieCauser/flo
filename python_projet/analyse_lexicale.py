@@ -24,11 +24,6 @@ class FloLexer(Lexer):
     SUPERIEUR_OU_EGAL= r'>='
     DIFFERENT= r'!='
 
-    #logique
-    ET= r'&'
-    OU= r'\|'
-    NON= r'not'
-
     @_(r'0|[1-9][0-9]*')
     def ENTIER(self, t):
         t.value = int(t.value)
@@ -50,6 +45,9 @@ class FloLexer(Lexer):
     IDENTIFIANT['tant que'] = TANT_QUE
     IDENTIFIANT['retourner'] = RETOURNER
     IDENTIFIANT['lire'] = LIRE
+    IDENTIFIANT['ou'] = OU
+    IDENTIFIANT['et'] = ET
+    IDENTIFIANT['non'] = NON
 
     #Syntaxe des commentaires à ignorer
     ignore_comment = r'\#.*'

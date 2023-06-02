@@ -113,10 +113,61 @@ def gen_expression(expression):
 			nasm_instruction("push", "0", "", "", "")  # on met sur la pile la valeur 0 pour dire vrai
 	elif type(expression) == arbre_abstrait.Lire: 
 		gen_lire(expression)
+	elif type(expression) == arbre_abstrait.Negation: 
+		if type(expression.booleen) == arbre_abstrait.Entier:
+			raise TypeError("on ne peut pas faire non d'un entier")
+		else: 
+			gen_negatif(expression)
+	elif type(expression) == arbre_abstrait.Disjonction: 
+		gen_disjonction(expression)
+	elif type(expression) == arbre_abstrait.Conjonction: 
+		gen_conjunction(expression)
 	else:
 		print("type d'expression inconnu",type(expression))
 		exit(0)
 
+"""
+Affiche le code nasm pour calculer la logique et la mettre en haut de la pile
+"""
+def gen_negatif(operation):
+		
+	gen_expression(operation.booleen) #on calcule et empile la valeur de exp1
+	
+	nasm_instruction("pop", "ebx", "", "", "dépile la seconde operande dans ebx")
+	nasm_instruction("pop", "eax", "", "", "dépile la permière operande dans eax")
+	
+	nasm_instruction("xor", "eax", "ebx", "", "effectue l'opération eax & ebx et met le résultat dans eax" )
+	nasm_instruction("push",  "eax" , "", "", "empile le résultat");	
+
+
+"""
+Affiche le code nasm pour calculer la logique et la mettre en haut de la pile
+"""
+def gen_disjonction(operation):
+		
+	gen_expression(operation.booleen1) #on calcule et empile la valeur de exp1
+	gen_expression(operation.booleen2) #on calcule et empile la valeur de exp2
+	
+	nasm_instruction("pop", "ebx", "", "", "dépile la seconde operande dans ebx")
+	nasm_instruction("pop", "eax", "", "", "dépile la permière operande dans eax")
+	
+	nasm_instruction("and", "eax", "ebx", "", "effectue l'opération eax & ebx et met le résultat dans eax" )
+	nasm_instruction("push",  "eax" , "", "", "empile le résultat");	
+
+"""
+Affiche le code nasm pour calculer la logique et la mettre en haut de la pile
+"""
+def gen_conjunction(operation):
+		
+	gen_expression(operation.booleen1) #on calcule et empile la valeur de exp1
+	gen_expression(operation.booleen2) #on calcule et empile la valeur de exp2
+	
+	nasm_instruction("pop", "ebx", "", "", "dépile la seconde operande dans ebx")
+	nasm_instruction("pop", "eax", "", "", "dépile la permière operande dans eax")
+	
+	nasm_instruction("or", "eax", "ebx", "", "effectue l'opération eax | ebx et met le résultat dans eax" )
+	nasm_instruction("push",  "eax" , "", "", "empile le résultat");	
+	
 
 """
 Affiche le code nasm pour calculer l'opération et la mettre en haut de la pile

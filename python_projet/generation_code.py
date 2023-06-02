@@ -49,6 +49,7 @@ def nasm_instruction(opcode, op1="", op2="", op3="", comment=""):
 Retourne le nom d'une nouvelle étiquette
 """
 def nasm_nouvelle_etiquette():
+	global num_etiquette_courante
 	num_etiquette_courante+=1
 	return "e"+str(num_etiquette_courante)
 
@@ -67,6 +68,31 @@ def gen_programme(programme):
 	nasm_instruction("mov", "eax", "1", "", "1 est le code de SYS_EXIT") 
 	nasm_instruction("int", "0x80", "", "", "exit") 
 	
+def gen_compare(compre):
+	op = compre.op
+		
+	gen_expression(compre.exp1) #on calcule et empile la valeur de exp1
+	gen_expression(compre.exp2) #on calcule et empile la valeur de exp2
+	
+	nasm_instruction("pop", "ebx", "", "", "dépile la seconde operande dans ebx")
+	nasm_instruction("pop", "eax", "", "", "dépile la permière operande dans eax")
+
+	etiquette0 = nasm_nouvelle_etiquette()
+	etiquette1 = nasm_nouvelle_etiquette()
+	
+	code = {"==":"je","!=":"je", "<":"jl","<=":"jle", ">":"jg", ">=":"jge"} #Un dictionnaire qui associe à chaque opérateur sa fonction nasm
+	#Voir: https://www.bencode.net/blob/nasmcheatsheet.pdf
+	nasm_instruction("cmp", "eax", "ebx", "", "effecture la comparaison entre les valeur eax et ebx")
+	nasm_instruction(code[op], etiquette0, "", "", "effectue l'opération eax" +op+"ebx et met le résultat dans eax" )
+	nasm_instruction("push", "0" if (op != '!=') else "1", "", "", "effectre l'oparation add entre eax et ebx")
+	nasm_instruction("jmp", etiquette1, "", "", "saut a l'etiquette")
+
+	printifm(etiquette0+":")
+	nasm_instruction("push", "1"if (op != '!=') else "0", "", "", "push la valeur 1")
+
+	printifm(etiquette1+":") 
+
+
 """
 Affiche le code nasm correspondant à une suite d'instructions
 """
@@ -83,6 +109,7 @@ def gen_instruction(instruction):
 	else:
 		print("type instruction inconnu",type(instruction))
 		exit(0)
+
 
 """
 Affiche le code nasm correspondant au fait d'envoyer la valeur entière d'une expression sur la sortie standard
@@ -122,6 +149,8 @@ def gen_expression(expression):
 		gen_disjonction(expression)
 	elif type(expression) == arbre_abstrait.Conjonction: 
 		gen_conjunction(expression)
+	elif type(expression) == arbre_abstrait.Comparaison:
+		gen_compare(expression)
 	else:
 		print("type d'expression inconnu",type(expression))
 		exit(0)

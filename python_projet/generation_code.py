@@ -114,8 +114,8 @@ def gen_expression(expression):
 	elif type(expression) == arbre_abstrait.Lire: 
 		gen_lire(expression)
 	elif type(expression) == arbre_abstrait.Negation: 
-		if type(expression.booleen) == arbre_abstrait.Entier:
-			raise TypeError("on ne peut pas faire non d'un entier")
+		if type(expression.booleen) != arbre_abstrait.Bool:
+			raise TypeError("on peut faire une opération logique qu'avec des booleen")
 		else: 
 			gen_negatif(expression)
 	elif type(expression) == arbre_abstrait.Disjonction: 

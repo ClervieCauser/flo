@@ -143,6 +143,100 @@ class FloParser(Parser):
     def expr(self, p):
         return arbre_abstrait.Comparaison('!=', p[0], p[2])
 
+    @_('declaration')
+    def instruction(self, p):
+        return p.declaration
+
+    @_('affectation')
+    def instruction(self, p):
+        return p.affectation
+
+    @_('declaration_affectation')
+    def instruction(self, p):
+        return p.declaration_affectation
+
+    @_('instruction_conditionnelle')
+    def instruction(self, p):
+        return p.instruction_conditionnelle
+
+    @_('instruction_boucle')
+    def instruction(self, p):
+        return p.instruction_boucle
+
+    @_('instruction_retourner')
+    def instruction(self, p):
+        return p.instruction_retourner
+
+    @_('appel_fonction_ignorer')
+    def instruction(self, p):
+        return p.appel_fonction_ignorer
+
+    # Action associée à la règle 'declaration'
+    @_('TYPE IDENTIFIANT ";"')
+    def declaration(self, p):
+        return arbre_abstrait.Declaration(p.TYPE, p.IDENTIFIANT)
+
+    # Action associée à la règle 'affectation'
+    @_('IDENTIFIANT "=" expr ";"')
+    def affectation(self, p):
+        return arbre_abstrait.Affectation(p.IDENTIFIANT, p.expr)
+
+    # Action associée à la règle 'declaration_affectation'
+    @_('TYPE IDENTIFIANT "=" expr ";"')
+    def declaration_affectation(self, p):
+        return arbre_abstrait.DeclarationAffectation(p.TYPE, p.IDENTIFIANT, p.expr)
+
+    # Action associée à la règle 'instruction_conditionnelle'
+    @_('SI "(" expr ")" "{" listeInstructions "}"')
+    def instruction_conditionnelle(self, p):
+        conditions = [arbre_abstrait.Condition(p.expr, p.listeInstructions)]
+        return arbre_abstrait.InstructionConditionnelle(conditions, None)
+
+    # Action associée à la règle 'sinon_si'
+    @_('sinon_si SINON_SI "(" expr ")" "{" listeInstructions "}"')
+    def sinon_si(self, p):
+        p.sinon_si.conditions.append(arbre_abstrait.Condition(p.expr, p.listeInstructions))
+        return p.sinon_si
+
+    # Action associée à la règle 'sinon'
+    @_('SINON "{" listeInstructions "}"')
+    def sinon(self, p):
+        return arbre_abstrait.Sinon(p.listeInstructions)
+
+    @_('SI "(" expr ")" "{" listeInstructions "}"')
+    def instruction(self, p):
+        return arbre_abstrait.InstructionConditionnelle([arbre_abstrait.Condition(p.expr, p.listeInstructions)], None)
+
+    @_('SI "(" expr ")" "{" listeInstructions "}" sinon')
+    def instruction(self, p):
+        return arbre_abstrait.InstructionConditionnelle([arbre_abstrait.Condition(p.expr, p.listeInstructions)],p.sinon)
+
+    @_('instruction_conditionnelle SINON_SI "(" expr ")" "{" listeInstructions "}"')
+    def sinon_si(self, p):
+        p.instruction_conditionnelle.conditions.append(arbre_abstrait.Condition(p.expr, p.listeInstructions))
+        return p.instruction_conditionnelle
+
+    @_('SINON "{" listeInstructions "}"')
+    def sinon(self, p):
+        return arbre_abstrait.Sinon(p.listeInstructions)
+
+    @_('TANTQUE "(" expr ")" "{" listeInstructions "}"')
+    def instruction(self, p):
+        return arbre_abstrait.InstructionBoucle(p.expr, p.listeInstructions)
+
+    @_('RETOURNER expr ";"')
+    def instruction(self, p):
+        return arbre_abstrait.InstructionRetourner(p.expr)
+
+    @_('expr')
+    def arguments(self,p):
+        return p.expr
+
+    @_('IDENTIFIANT "(" arguments ")" ";"')
+    def instruction(self, p):
+        return arbre_abstrait.AppelFonctionIgnorer(p.IDENTIFIANT, p.arguments)
+
+
 if __name__ == '__main__':
     lexer = FloLexer()
     parser = FloParser()

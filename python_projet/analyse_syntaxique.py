@@ -159,18 +159,6 @@ class FloParser(Parser):
     def instruction(self, p):
         return p.instruction_conditionnelle
 
-    @_('instruction_boucle')
-    def instruction(self, p):
-        return p.instruction_boucle
-
-    @_('instruction_retourner')
-    def instruction(self, p):
-        return p.instruction_retourner
-
-    @_('appel_fonction_ignorer')
-    def instruction(self, p):
-        return p.appel_fonction_ignorer
-
     # Action associée à la règle 'declaration'
     @_('TYPE IDENTIFIANT ";"')
     def declaration(self, p):
@@ -215,10 +203,6 @@ class FloParser(Parser):
     def sinon_si(self, p):
         p.instruction_conditionnelle.conditions.append(arbre_abstrait.Condition(p.expr, p.listeInstructions))
         return p.instruction_conditionnelle
-
-    @_('SINON "{" listeInstructions "}"')
-    def sinon(self, p):
-        return arbre_abstrait.Sinon(p.listeInstructions)
 
     @_('TANTQUE "(" expr ")" "{" listeInstructions "}"')
     def instruction(self, p):

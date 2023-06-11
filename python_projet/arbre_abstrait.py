@@ -5,12 +5,18 @@ def afficher(s,indent=0):
     print(" "*indent+s)
 
 class Programme:
-    def __init__(self,listeInstructions):
+    def __init__(self, listeFonctions, listeInstructions):
+        self.listeFonctions = listeFonctions
         self.listeInstructions = listeInstructions
-    def afficher(self,indent=0):
-        afficher("<programme>",indent)
-        self.listeInstructions.afficher(indent+1)
-        afficher("</programme>",indent)
+
+    def afficher(self, indent=0):
+        afficher("<programme>", indent)
+        afficher("<listeFonctions>", indent + 1)
+        for fonction in self.listeFonctions:
+            fonction.afficher(indent + 2)
+        afficher("</listeFonctions>", indent + 1)
+        self.listeInstructions.afficher(indent + 1)
+        afficher("</programme>", indent)
 
 class ListeInstructions:
     def __init__(self):
@@ -204,3 +210,32 @@ class Condition:
         self.condition.afficher(indent + 1)
         self.instructions.afficher(indent + 1)
         afficher("</condition>", indent)
+
+
+class Fonction:
+    def __init__(self, type_, identifiant, arguments, listeInstructions):
+        self.type = type_
+        self.identifiant = identifiant
+        self.arguments = arguments
+        self.listeInstructions = listeInstructions
+    def afficher(self, indent=0):
+        afficher("<fonction>", indent)
+        afficher(self.type, indent + 1)
+        afficher(self.identifiant, indent + 1)
+        afficher("<arguments>", indent + 1)
+        for arg in self.arguments:
+            afficher(arg[0], indent + 2)
+            afficher(arg[1], indent + 2)
+        afficher("</arguments>", indent + 1)
+        self.listeInstructions.afficher(indent + 1)
+        afficher("</fonction>", indent)
+
+class Argument:
+    def __init__(self, type_, identifiant):
+        self.type = type_
+        self.identifiant = identifiant
+    def afficher(self, indent=0):
+        afficher("<argument>", indent)
+        afficher(self.type, indent + 1)
+        afficher(self.identifiant, indent + 1)
+        afficher("</argument>", indent)

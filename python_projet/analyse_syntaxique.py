@@ -11,7 +11,7 @@ class FloParser(Parser):
 
     @_('listeInstructions')
     def prog(self, p):
-        return arbre_abstrait.Programme(p[0])
+        return arbre_abstrait.Programme([], p[0])
 
     @_('instruction')
     def listeInstructions(self, p):
@@ -219,6 +219,31 @@ class FloParser(Parser):
     @_('IDENTIFIANT "(" arguments ")" ";"')
     def instruction(self, p):
         return arbre_abstrait.AppelFonctionIgnorer(p.IDENTIFIANT, p.arguments)
+
+    @_('listeFonctions listeInstructions')
+    def prog(self, p):
+        return arbre_abstrait.Programme(p.listeFonctions, p.listeInstructions)
+
+    @_('fonction')
+    def listeFonctions(self, p):
+        return [p.fonction]
+
+    @_('fonction listeFonctions')
+    def listeFonctions(self, p):
+        p.listeFonctions.append(p.fonction)
+        return p.listeFonctions
+
+    @_('TYPE IDENTIFIANT "(" arguments ")" "{" listeInstructions "}"')
+    def fonction(self, p):
+        return arbre_abstrait.Fonction(p.TYPE, p.IDENTIFIANT, p.arguments, p.listeInstructions)
+
+    @_('TYPE IDENTIFIANT')
+    def arguments(self, p):
+        return [(p.TYPE, p.IDENTIFIANT)]
+
+    @_('TYPE IDENTIFIANT "," arguments')
+    def arguments(self, p):
+        return [arbre_abstrait.Argument(p.TYPE, p.IDENTIFIANT)] + p.arguments
 
 
 if __name__ == '__main__':
